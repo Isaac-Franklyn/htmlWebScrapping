@@ -6,6 +6,7 @@ import java.io.IOException;
 
 
 
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -107,18 +108,11 @@ public class EmployeeController {
         }
     }
 	
-	//EXPORT DATA FROM EXCEL FILe
 	@GetMapping("/export")
-    public void exportEmployees(HttpServletResponse response) {
-        // Get employee data from service
-        List<Employee> employees = employeeService.getAllEmployees();
-
-        // Export data to Excel
-        employeeService.exportEmployeesToExcel(employees);
-
-        // Set headers for Excel file download
+    public void exportEmployees(HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=employees.xlsx");
+        employeeService.exportEmployeesToExcel(response.getOutputStream());
     }
 	
 }

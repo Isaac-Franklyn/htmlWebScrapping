@@ -5,8 +5,10 @@ package com.example.employeemanagement.service;
 
 
 
-import java.io.FileOutputStream;
+
+
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -67,12 +69,12 @@ public class EmployeeService {
         return employeeRepositoryCustom.searchEmployees(name, age, salary, startDate, endDate);
     }
     
- // EXPORT DATA TO EXCEL
-    public void exportEmployeesToExcel(List<Employee> employees) {
+ // Export employees to Excel
+    public void exportEmployeesToExcel(OutputStream outputStream) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Employees");
 
-            // Create Header Row
+            // Create header row
             Row headerRow = sheet.createRow(0);
             headerRow.createCell(0).setCellValue("ID");
             headerRow.createCell(1).setCellValue("Name");
@@ -80,7 +82,10 @@ public class EmployeeService {
             headerRow.createCell(3).setCellValue("Salary");
             headerRow.createCell(4).setCellValue("Date of Joining");
 
-            // Populate Data Rows
+            // Get employee data
+            List<Employee> employees = getAllEmployees();
+
+            // Populate data rows
             int rowNum = 1;
             for (Employee employee : employees) {
                 Row row = sheet.createRow(rowNum++);
@@ -91,19 +96,10 @@ public class EmployeeService {
                 row.createCell(4).setCellValue(employee.getDateOfJoining().toString());
             }
 
-            // Write to File
-            try (FileOutputStream fileOut = new FileOutputStream("employees.xlsx")) {
-                workbook.write(fileOut);
-                System.out.println("Excel file created successfully.");
-            } catch (IOException e) {
-                System.out.println("Error writing to file: " + e.getMessage());
-            }
-        } catch (IOException e) {
-            System.out.println("Error creating workbook: " + e.getMessage());
+            // Write workbook to output stream
+            workbook.write(outputStream);
         }
     }
     
-
-   
 }
 
