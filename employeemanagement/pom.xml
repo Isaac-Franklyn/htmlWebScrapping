@@ -25,7 +25,11 @@
     </dependency>
     <!-- Excel streaming support for POI -->
     <!-- Apache Commons IO -->
-    
+    <dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20210307</version>
+</dependency>
     <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>

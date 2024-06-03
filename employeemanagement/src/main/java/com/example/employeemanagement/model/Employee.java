@@ -16,6 +16,20 @@ public class Employee {
 	private int age;
 	private double salary;
 	private LocalDate dateOfJoining;
+	private String employeeID;
+	private String experience;
+	public String getExperience() {
+		return experience;
+	}
+	public void setExperience(String experience) {
+		this.experience = experience;
+	}
+	public String getEmployeeID() {
+		return employeeID;
+	}
+	public void setEmployeeID(String employeeID) {
+		this.employeeID = employeeID;
+	}
 	
 	public String getId() {
 		return id;

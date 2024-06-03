@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,8 @@ public class EmployeeImportService{
     @Autowired
     private MongoTemplate mongoTemplate;
     
+    @Autowired
+    private EmployeeService employeeService;
     
 
     public void importEmployeesFromExcel(MultipartFile file) throws IOException {
@@ -39,11 +42,31 @@ public class EmployeeImportService{
 
             while (rows.hasNext()) {
                 Row row = rows.next();
+                
+             // Check if the row is completely empty
+                boolean isRowEmpty = true;
+                for (int i = row.getFirstCellNum(); i < row.getLastCellNum(); i++) {
+                    if (row.getCell(i) != null && row.getCell(i).getCellType() != CellType.BLANK) {
+                        isRowEmpty = false;
+                        break;
+                    }
+                }
+                
+                if (isRowEmpty) {
+                    continue;
+                }
+                
                 Employee employee = new Employee();
 
                 Cell nameCell = row.getCell(0);
                 if (nameCell != null) {
-                    employee.setName(nameCell.getStringCellValue());
+                	if (nameCell.getCellType() == CellType.STRING) {
+          
+                		 employee.setName(nameCell.getStringCellValue());
+                	}
+                	else {
+                		System.out.println("Non-String value found for age in row " + row.getRowNum());
+                	}
                 }
 
                 Cell ageCell = row.getCell(1);
@@ -62,22 +85,27 @@ public class EmployeeImportService{
                         employee.setSalary(salaryCell.getNumericCellValue());
                     } else {
                         // Handle non-numeric cell value
-                    	System.out.println("Non-numeric value found for age in row " + row.getRowNum());
-                    }
+                    	 System.out.println("Non-numeric value found for salary in row " + row.getRowNum());                    }
                 }
 
                 Cell dateCell = row.getCell(3);
                 if (dateCell != null) {
-                    if (dateCell.getCellType() == CellType.NUMERIC) {
-                        LocalDate localDate = dateCell.getLocalDateTimeCellValue().toLocalDate();
-                        employee.setDateOfJoining(localDate);
+                    if (dateCell.getCellType() == CellType.STRING) {
+                        try {
+                            LocalDate localDate = LocalDate.parse(dateCell.getStringCellValue());
+                            employee.setDateOfJoining(localDate);
+                        } catch (DateTimeParseException e) {
+                            // Handle invalid date format
+                            System.out.println("Invalid date format in row " + row.getRowNum());
+                        }
                     } else {
-                        // Handle non-numeric cell value
-                    	System.out.println("Non-numeric value found for age in row " + row.getRowNum());
+                        // Handle non-string cell value
+                        System.out.println("Non-string value found for date in row " + row.getRowNum());
                     }
                 }
- 
-
+                
+                employee.setEmployeeID(employeeService.createEmployeeID(employee));
+              
                 employees.add(employee);
             }
         }
