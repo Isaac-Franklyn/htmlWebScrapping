@@ -9,8 +9,7 @@ public class Operations {
 	@Id
     private String id;
     private String hours;
-    private String fromTime;
-    private String toTime;
+    private String fromToTime;
     private String lateral;
     private String holeSize;
     private String category;
@@ -37,17 +36,12 @@ public class Operations {
 	public void setHours(String hours) {
 		this.hours = hours;
 	}
-	public String getFromTime() {
-		return fromTime;
+	
+	public String getFromToTime() {
+		return fromToTime;
 	}
-	public void setFromTime(String fromTime) {
-		this.fromTime = fromTime;
-	}
-	public String getToTime() {
-		return toTime;
-	}
-	public void setToTime(String toTime) {
-		this.toTime = toTime;
+	public void setFromToTime(String fromToTime) {
+		this.fromToTime = fromToTime;
 	}
 	public String getLateral() {
 		return lateral;
