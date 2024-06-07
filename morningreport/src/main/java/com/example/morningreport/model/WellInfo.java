@@ -21,6 +21,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 	    private String location;
 	    private String daysSinceSpud;
 	    private String formationTops;
+	    private String circPercent;
+	    
 	    public String getCharge() {
 			return charge;
 		}
@@ -39,7 +41,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 		public void setSuperintendent(String superintendent) {
 			this.superintendent = superintendent;
 		}
-		private String circPercent;
+		
 		public String getId() {
 			return id;
 		}
